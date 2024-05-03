@@ -18,3 +18,7 @@ App was written by UIKit Swift on Clean RxSwift MVVM architecture.
 ### Time consumed
 
 ### Limitation
+
+##### Home screen
+
+- Expected item's `url` field always be `id` value and image stored at `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png`

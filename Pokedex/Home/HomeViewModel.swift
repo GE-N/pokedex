@@ -24,24 +24,18 @@ final class HomeViewModelImpl: HomeViewModel, HomeViewModelInput, HomeViewModelO
   var sections: Driver<[HomeSection]> = .empty()
   
   init() {
-    sections = viewDidLoad.map({ _ -> [HomeSection] in
-      let items: [HomeItem] = [
-        .item(Pokemon(id: "1", name: "tatsugiri")),
-        .item(Pokemon(id: "2", name: "tatsugiri")),
-        .item(Pokemon(id: "3", name: "tatsugiri")),
-        .item(Pokemon(id: "4", name: "tatsugiri")),
-        .item(Pokemon(id: "5", name: "tatsugiri")),
-        .item(Pokemon(id: "6", name: "tatsugiri")),
-        .item(Pokemon(id: "7", name: "tatsugiri")),
-        .item(Pokemon(id: "8", name: "tatsugiri")),
-        .item(Pokemon(id: "9", name: "tatsugiri")),
-        .item(Pokemon(id: "10", name: "tatsugiri")),
-        .item(Pokemon(id: "11", name: "tatsugiri")),
-        .item(Pokemon(id: "12", name: "tatsugiri")),
-        .item(Pokemon(id: "13", name: "tatsugiri")),
-      ]
-      let section = HomeSection(items: items, name: "MainSection")
-      return [section]
-    }).asDriver(onErrorDriveWith: .empty())
+    let api = APIRequest()
+    sections = viewDidLoad
+      .flatMap { _ -> Observable<GetAllPokemonResponse> in
+        api.request(.getAllPokemon)
+      }
+      .map { items in
+        let homeItems = items.results.map { HomeItem.item($0) }
+        let section = HomeSection(items: homeItems, name: "main")
+        return [section]
+      }
+      .asDriver(onErrorJustReturn: [])
+    
+    // TODO: Handle presentation on load fail
   }
 }
