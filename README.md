@@ -10,12 +10,16 @@ App was written by UIKit Swift on Clean RxSwift MVVM architecture.
 
 - RxSwift & RxCocoa : For data binding between view and viewModel.
 - Kingfisher : For image loading with cache.
+- RxSwift's twoWayBind extension : For mapping on textfields.
 
 ---
 
 ### How to setup
 
 ### Time consumed
+
+- Read API documentation and app design ~3 hrs.
+- Home screen implement ~3 hrs.
 
 ### Limitation
 

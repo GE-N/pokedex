@@ -76,6 +76,7 @@ class HomeViewController: UIViewController {
   
   private func bindInput() {
     rx.viewDidLoad.bind(to: viewModel.input.viewDidLoad).disposed(by: bag)
+    (searchTextField.rx.text.orEmpty <-> viewModel.input.filterTyped).disposed(by: bag)
   }
   
   private func bindOutput() {

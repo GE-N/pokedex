@@ -80,7 +80,7 @@ final class HomeItemCell: UICollectionViewCell {
   
   func setItem(_ item: HomeCellPresentable) {
     spriteImageView.kf.setImage(with: item.imageUrl)
-    nameLabel.text = item.name
+    nameLabel.text = item.name.capitalized
     idLabel.text = " #\(item.id)"
   }
 }
