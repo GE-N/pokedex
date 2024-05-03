@@ -1,10 +1,13 @@
 import UIKit
+import RxSwift
+import RxCocoa
 
 class HomeViewController: UIViewController {
-
+  private var contentWidth: CGFloat?
+  
   private lazy var searchTextField: UITextField = {
     let textField = UITextField()
-    textField.placeholder = "Type Pokemon's name or id here for search"
+    textField.placeholder = "Pokemon's name or id"
     return textField
   }()
   
@@ -15,20 +18,44 @@ class HomeViewController: UIViewController {
     return view
   }()
   
+  private lazy var datasource: UICollectionViewDiffableDataSource<HomeSection, HomeItem> = {
+    let datasource = UICollectionViewDiffableDataSource<HomeSection, HomeItem>(collectionView: collectionView) { collectionView, indexPath, item in
+      switch item {
+      case let .item(pokemon):
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeItemCell.cellIdentifier, for: indexPath) as? HomeItemCell else {
+          return UICollectionViewCell()
+        }
+        cell.setItem(pokemon)
+        return cell
+      }
+    }
+    return datasource
+  }()
+  
   private lazy var collectionView: UICollectionView = {
     let layout = UICollectionViewFlowLayout()
     layout.scrollDirection = .vertical
     let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
     collectionView.translatesAutoresizingMaskIntoConstraints = false
+    collectionView.register(HomeItemCell.self, forCellWithReuseIdentifier: HomeItemCell.cellIdentifier)
+    collectionView.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 16, right: 16)
+    collectionView.delegate = self
     return collectionView
   }()
+  
+  private let viewModel: HomeViewModel = HomeViewModelImpl()
+  private let bag = DisposeBag()
+  
+  // MARK: -
   
   override func loadView() {
     super.loadView()
     setupLayout()
+    bindInput()
+    bindOutput()
   }
   
-  func setupLayout() {
+  private func setupLayout() {
     title = "Pokedex"
     
     view.addSubview(searchBarView)
@@ -46,6 +73,36 @@ class HomeViewController: UIViewController {
       collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
     ])
   }
-
+  
+  private func bindInput() {
+    rx.viewDidLoad.bind(to: viewModel.input.viewDidLoad).disposed(by: bag)
+  }
+  
+  private func bindOutput() {
+    viewModel.output.sections
+      .drive(onNext: { [weak self] sections in
+        guard let self else { return }
+        var snapshot = NSDiffableDataSourceSnapshot<HomeSection, HomeItem>()
+        snapshot.appendSections(sections)
+        sections.forEach { section in
+          snapshot.appendItems(section.items, toSection: section)
+        }
+        self.datasource.apply(snapshot, animatingDifferences: true)
+      })
+      .disposed(by: bag)
+  }
 }
 
+extension HomeViewController: UICollectionViewDelegateFlowLayout {
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    if contentWidth == nil {
+      let columnsPerRow = 3
+      let spacing = CGFloat(columnsPerRow + 1) * 8.0
+      let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
+      let contextWidth = collectionView.bounds.size.width - horizontalInset - spacing
+      self.contentWidth = CGFloat(contextWidth) / CGFloat(columnsPerRow)
+    }
+    
+    return CGSize(width: contentWidth!, height: 150)
+  }
+}

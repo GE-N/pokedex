@@ -2,6 +2,7 @@ import UIKit
 
 final class HomeSearchBar: UIView {
   let contentStack = UIStackView()
+  private let style = Style()
   
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -16,7 +17,7 @@ final class HomeSearchBar: UIView {
   private func commonInit() {
     let contentView = UIView()
     contentView.translatesAutoresizingMaskIntoConstraints = false
-    contentView.backgroundColor = UIColor(hex: "#EEEEEE")
+    contentView.backgroundColor = style.lightGrayColor
     contentView.layer.cornerRadius = 8
     addSubview(contentView)
     
