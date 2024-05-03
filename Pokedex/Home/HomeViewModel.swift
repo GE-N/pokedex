@@ -9,6 +9,7 @@ protocol HomeViewModelInput {
 
 protocol HomeViewModelOutput {
   var sections: Driver<[HomeSection]> { get }
+  var canClearSearchBox: Driver<Bool> { get }
 }
 
 protocol HomeViewModel {
@@ -24,6 +25,8 @@ final class HomeViewModelImpl: HomeViewModel, HomeViewModelInput, HomeViewModelO
   let filterTyped: BehaviorRelay<String> = .init(value: "")
   
   var sections: Driver<[HomeSection]> = .empty()
+  var canClearSearchBox: Driver<Bool> = .empty()
+  
   private let bag = DisposeBag()
   
   init() {
@@ -60,5 +63,9 @@ final class HomeViewModelImpl: HomeViewModel, HomeViewModelInput, HomeViewModelO
         return [section]
       }
       .asDriver(onErrorJustReturn: [])
+    
+    canClearSearchBox = filterTyped
+      .map { !$0.isEmpty }
+      .asDriver(onErrorJustReturn: false)
   }
 }

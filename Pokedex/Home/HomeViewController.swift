@@ -43,6 +43,17 @@ class HomeViewController: UIViewController {
     return collectionView
   }()
   
+  private lazy var dismissKeyboardGesture: UITapGestureRecognizer = {
+    let gesture = UITapGestureRecognizer()
+    gesture.addTarget(self, action: #selector(dismissKeyboard))
+    gesture.cancelsTouchesInView = false
+    return gesture
+  }()
+  
+  @objc private func dismissKeyboard() {
+    view.endEditing(true)
+  }
+  
   private let viewModel: HomeViewModel = HomeViewModelImpl()
   private let bag = DisposeBag()
   
@@ -57,6 +68,8 @@ class HomeViewController: UIViewController {
   
   private func setupLayout() {
     title = "Pokedex"
+    
+    view.addGestureRecognizer(dismissKeyboardGesture)
     
     view.addSubview(searchBarView)
     NSLayoutConstraint.activate([
@@ -91,6 +104,12 @@ class HomeViewController: UIViewController {
         self.datasource.apply(snapshot, animatingDifferences: true)
       })
       .disposed(by: bag)
+    
+    viewModel.output.canClearSearchBox.map { canClear -> UITextField.ViewMode in
+      canClear ? .always : .never
+    }
+    .drive(searchTextField.rx.clearButtonMode)
+    .disposed(by: bag)
   }
 }
 
