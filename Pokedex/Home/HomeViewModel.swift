@@ -5,11 +5,13 @@ import RxCocoa
 protocol HomeViewModelInput {
   var viewDidLoad: PublishRelay<Void> { get }
   var filterTyped: BehaviorRelay<String> { get }
+  var itemSelected: PublishRelay<IndexPath> { get }
 }
 
 protocol HomeViewModelOutput {
   var sections: Driver<[HomeSection]> { get }
   var canClearSearchBox: Driver<Bool> { get }
+  var showInfo: Driver<Pokemon> { get }
 }
 
 protocol HomeViewModel {
@@ -23,9 +25,11 @@ final class HomeViewModelImpl: HomeViewModel, HomeViewModelInput, HomeViewModelO
   
   let viewDidLoad: PublishRelay<Void> = .init()
   let filterTyped: BehaviorRelay<String> = .init(value: "")
+  let itemSelected: PublishRelay<IndexPath> = .init()
   
   var sections: Driver<[HomeSection]> = .empty()
   var canClearSearchBox: Driver<Bool> = .empty()
+  var showInfo: Driver<Pokemon> = .empty()
   
   private let bag = DisposeBag()
   
@@ -67,5 +71,14 @@ final class HomeViewModelImpl: HomeViewModel, HomeViewModelInput, HomeViewModelO
     canClearSearchBox = filterTyped
       .map { !$0.isEmpty }
       .asDriver(onErrorJustReturn: false)
+    
+    showInfo = itemSelected.withLatestFrom(sections) { index, section -> Pokemon in
+      guard let selectedItem = section.first?.items[index.row],
+            let itemValue: Pokemon = selectedItem.value() else {
+        throw "invalid item selection"
+      }
+      return itemValue
+    }
+    .asDriver(onErrorDriveWith: .empty())
   }
 }

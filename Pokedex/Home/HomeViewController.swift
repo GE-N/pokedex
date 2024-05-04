@@ -90,6 +90,7 @@ class HomeViewController: UIViewController {
   private func bindInput() {
     rx.viewDidLoad.bind(to: viewModel.input.viewDidLoad).disposed(by: bag)
     (searchTextField.rx.text.orEmpty <-> viewModel.input.filterTyped).disposed(by: bag)
+    collectionView.rx.itemSelected.bind(to: viewModel.input.itemSelected).disposed(by: bag)
   }
   
   private func bindOutput() {
@@ -110,6 +111,14 @@ class HomeViewController: UIViewController {
     }
     .drive(searchTextField.rx.clearButtonMode)
     .disposed(by: bag)
+    
+    viewModel.output.showInfo
+      .drive(onNext: { [weak self] pokemon in
+        let viewModel = DetailsViewModelImpl(pokemon: pokemon)
+        let detailsView = DetailsViewController(viewModel: viewModel)
+        self?.navigationController?.pushViewController(detailsView, animated: true)
+      })
+      .disposed(by: bag)
   }
 }
 

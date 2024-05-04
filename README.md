@@ -12,6 +12,13 @@ App was written by UIKit Swift on Clean RxSwift MVVM architecture.
 - Kingfisher : For image loading with cache.
 - RxSwift's twoWayBind extension : For mapping on textfields.
 
+##### Features
+
+[✓] Show a Pokemons index.
+[✓] Filterable by name or id.
+[] Retry if home screen load fail.
+[] Show details of selected Pokemon.
+
 ---
 
 ### How to setup

@@ -14,6 +14,13 @@ extension HomeSection: Hashable {}
 
 enum HomeItem {
   case item(Pokemon)
+  
+  func value<T>() -> T? {
+    switch self {
+    case let .item(value):
+      return value as? T
+    }
+  }
 }
 
 extension HomeItem: Equatable {
