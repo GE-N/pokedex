@@ -13,7 +13,7 @@ extension InformationResponse {
   }
   
   func pokemonStats() -> StatViewItem {
-    var statItem = StatViewItem()
+    let statItem = StatViewItem()
     stats.forEach { item in
       switch item.stat.name {
       case "hp": statItem.hp = item.baseStat
@@ -27,5 +27,12 @@ extension InformationResponse {
       }
     }
     return statItem
+  }
+}
+
+extension SpeciesResponse {
+  /// First en text by order, ignore version.
+  func defaultFlavorText() -> String {
+    return flavorTextEntries.filter { $0.language.name == "en" }.first?.flavorText.replacingOccurrences(of: "\n", with: " ") ?? ""
   }
 }

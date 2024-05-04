@@ -10,6 +10,7 @@ protocol DetailsViewModelOutput {
   var name: String { get }
   var imageUrl: Driver<URL?> { get }
   var stats: Driver<StatViewItem> { get }
+  var speciesDescription: Driver<String> { get }
 }
 
 protocol DetailsViewModel {
@@ -26,6 +27,7 @@ final class DetailsViewModelImpl: DetailsViewModel, DetailsViewModelInput, Detai
   var name: String
   var imageUrl: Driver<URL?> = .empty()
   var stats: Driver<StatViewItem> = .empty()
+  var speciesDescription: Driver<String> = .empty()
   
   private let bag = DisposeBag()
   
@@ -50,5 +52,14 @@ final class DetailsViewModelImpl: DetailsViewModel, DetailsViewModelInput, Detai
     stats = infoResponseSuccess
       .map { $0.pokemonStats() }
       .asDriver(onErrorDriveWith: .empty())
+    
+    speciesDescription = infoResponseSuccess.flatMap { info -> Observable<SpeciesResponse> in
+      guard let speciesInfo = URL(string: info.species.url) else { return .empty() }
+      return api.request(.custom(speciesInfo))
+    }
+    .map { $0.defaultFlavorText() }
+    .asDriver(onErrorJustReturn: "")
+    
+    
   }
 }

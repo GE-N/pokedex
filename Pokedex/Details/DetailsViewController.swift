@@ -10,6 +10,7 @@ protocol DetailsRetrievable {
 
 final class DetailsViewController: UIViewController {
   var viewModel: DetailsViewModel!
+  private let style = Style()
   private let bag = DisposeBag()
   
   private lazy var pokemonImageView: UIImageView = {
@@ -36,11 +37,36 @@ final class DetailsViewController: UIViewController {
     return stackView
   }()
   
+  private lazy var speciesDescLabel: UILabel = {
+    let label = UILabel()
+    label.translatesAutoresizingMaskIntoConstraints = false
+    label.numberOfLines = 0
+    return label
+  }()
+  
+  private lazy var speciesDescView: UIView = {
+    let view = UIView()
+    view.translatesAutoresizingMaskIntoConstraints = false
+    view.addSubview(speciesDescLabel)
+    NSLayoutConstraint.activate([
+      speciesDescLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 8),
+      speciesDescLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
+      speciesDescLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -8),
+      speciesDescLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
+    ])
+    view.backgroundColor = style.lightGrayColor
+    view.layer.cornerRadius = 8
+    return view
+  }()
+  
   private lazy var contentStackView: UIStackView = {
     let stackView = UIStackView()
+    stackView.axis = .vertical
     stackView.translatesAutoresizingMaskIntoConstraints = false
+    stackView.spacing = 8
     
     stackView.addArrangedSubview(imageAndStatSection)
+    stackView.addArrangedSubview(speciesDescView)
     
     return stackView
   }()
@@ -51,12 +77,12 @@ final class DetailsViewController: UIViewController {
     scrollView.addSubview(contentStackView)
     NSLayoutConstraint.activate([
       contentStackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 16),
-      contentStackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+      contentStackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 16),
       contentStackView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
       contentStackView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
       
-      contentStackView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor),
-      contentStackView.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor),
+      contentStackView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+      contentStackView.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16),
     ])
     return scrollView
   }()
@@ -84,6 +110,8 @@ final class DetailsViewController: UIViewController {
       contentScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
       contentScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
     ])
+    
+    speciesDescView.isHidden = true
   }
   
   func bindInput() {
@@ -99,6 +127,11 @@ final class DetailsViewController: UIViewController {
     
     viewModel.output.stats.drive(onNext: { [weak self] stat in
       self?.statsView.setStats(stat)
+    }).disposed(by: bag)
+    
+    viewModel.output.speciesDescription.drive(onNext: { [weak self] description in
+      self?.speciesDescView.isHidden = description.isEmpty
+      self?.speciesDescLabel.text = description
     }).disposed(by: bag)
   }
 }
