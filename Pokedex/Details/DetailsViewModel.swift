@@ -41,13 +41,8 @@ final class DetailsViewModelImpl: DetailsViewModel, DetailsViewModelInput, Detai
     
     let infoResponseSuccess = infoResponse.values().share()
     
-    imageUrl = infoResponseSuccess.map { info -> URL? in
-      guard let officialArtwork = info.sprites.other?["official-artwork"]?.frontDefault else {
-        let defaultUrl = info.sprites.frontDefault ?? ""
-        return URL(string: defaultUrl)
-      }
-      return URL(string: officialArtwork)
-    }
-    .asDriver(onErrorDriveWith: .empty())
+    imageUrl = infoResponseSuccess
+      .map { $0.officialArtworkUrl() }
+      .asDriver(onErrorDriveWith: .empty())
   }
 }
