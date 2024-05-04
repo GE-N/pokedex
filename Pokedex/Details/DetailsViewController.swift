@@ -16,13 +16,14 @@ final class DetailsViewController: UIViewController {
     let imageView = UIImageView()
     imageView.translatesAutoresizingMaskIntoConstraints = false
     imageView.contentMode = .scaleAspectFit
+    let height = view.bounds.size.width / 2
+    imageView.heightAnchor.constraint(equalToConstant: height).isActive = true
     return imageView
   }()
   
-  private lazy var statStackView: UIStackView = {
-    let stackView = UIStackView()
-    stackView.backgroundColor = .blue
-    return stackView
+  private lazy var statsView: StatsView = {
+    let view = StatsView()
+    return view
   }()
   
   private lazy var imageAndStatSection: UIStackView = {
@@ -31,7 +32,7 @@ final class DetailsViewController: UIViewController {
     stackView.spacing = 8
     stackView.distribution = .fillEqually
     stackView.addArrangedSubview(pokemonImageView)
-    stackView.addArrangedSubview(statStackView)
+    stackView.addArrangedSubview(statsView)
     return stackView
   }()
   
@@ -49,7 +50,7 @@ final class DetailsViewController: UIViewController {
     scrollView.translatesAutoresizingMaskIntoConstraints = false
     scrollView.addSubview(contentStackView)
     NSLayoutConstraint.activate([
-      contentStackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+      contentStackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 16),
       contentStackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
       contentStackView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
       contentStackView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
@@ -94,6 +95,10 @@ final class DetailsViewController: UIViewController {
     
     viewModel.output.imageUrl.drive(onNext: { [weak self] url in
       self?.pokemonImageView.kf.setImage(with: url)
+    }).disposed(by: bag)
+    
+    viewModel.output.stats.drive(onNext: { [weak self] stat in
+      self?.statsView.setStats(stat)
     }).disposed(by: bag)
   }
 }

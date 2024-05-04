@@ -9,6 +9,7 @@ protocol DetailsViewModelInput {
 protocol DetailsViewModelOutput {
   var name: String { get }
   var imageUrl: Driver<URL?> { get }
+  var stats: Driver<StatViewItem> { get }
 }
 
 protocol DetailsViewModel {
@@ -22,8 +23,9 @@ final class DetailsViewModelImpl: DetailsViewModel, DetailsViewModelInput, Detai
   
   let viewDidLoad: PublishRelay<Void> = .init()
   
-  var imageUrl: Driver<URL?> = .empty()
   var name: String
+  var imageUrl: Driver<URL?> = .empty()
+  var stats: Driver<StatViewItem> = .empty()
   
   private let bag = DisposeBag()
   
@@ -43,6 +45,10 @@ final class DetailsViewModelImpl: DetailsViewModel, DetailsViewModelInput, Detai
     
     imageUrl = infoResponseSuccess
       .map { $0.officialArtworkUrl() }
+      .asDriver(onErrorDriveWith: .empty())
+    
+    stats = infoResponseSuccess
+      .map { $0.pokemonStats() }
       .asDriver(onErrorDriveWith: .empty())
   }
 }

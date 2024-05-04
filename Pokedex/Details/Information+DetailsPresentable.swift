@@ -11,4 +11,21 @@ extension InformationResponse {
     }
     return URL(string: officialArtwork)
   }
+  
+  func pokemonStats() -> StatViewItem {
+    var statItem = StatViewItem()
+    stats.forEach { item in
+      switch item.stat.name {
+      case "hp": statItem.hp = item.baseStat
+      case "attack": statItem.atk = item.baseStat
+      case "defense": statItem.def = item.baseStat
+      case "special-attack": statItem.sAtk = item.baseStat
+      case "special-defense": statItem.sDef = item.baseStat
+      case "speed": statItem.spd = item.baseStat
+      default:
+        break
+      }
+    }
+    return statItem
+  }
 }
