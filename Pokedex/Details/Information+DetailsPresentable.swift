@@ -36,3 +36,34 @@ extension SpeciesResponse {
     return flavorTextEntries.filter { $0.language.name == "en" }.first?.flavorText.replacingOccurrences(of: "\n", with: " ") ?? ""
   }
 }
+
+extension TypeResponse: TypeViewPresentable {
+  var types: String {
+    return name
+  }
+  
+  var doubleDamageFrom: String? {
+    return damageRelations.doubleDamageFrom.map { $0.name }.joined(separator: ", ")
+  }
+  
+  var doubleDamageTo: String? {
+    return damageRelations.doubleDamageTo.map { $0.name }.joined(separator: ", ")
+  }
+  
+  var halfDamageFrom: String? {
+    return damageRelations.halfDamageFrom.map { $0.name }.joined(separator: ", ")
+  }
+  
+  var halfDamageTo: String? {
+    return damageRelations.halfDamageTo.map { $0.name }.joined(separator: ", ")
+  }
+  
+  var noDamageFrom: String? {
+    return damageRelations.noDamageFrom.map { $0.name }.joined(separator: ", ")
+  }
+  
+  var noDamageTo: String? {
+    return damageRelations.noDamageTo.map { $0.name }.joined(separator: ", ")
+  }
+  
+}

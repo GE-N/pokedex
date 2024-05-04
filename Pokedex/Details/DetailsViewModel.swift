@@ -11,6 +11,7 @@ protocol DetailsViewModelOutput {
   var imageUrl: Driver<URL?> { get }
   var stats: Driver<StatViewItem> { get }
   var speciesDescription: Driver<String> { get }
+  var types: Driver<[TypeResponse]> { get }
 }
 
 protocol DetailsViewModel {
@@ -28,6 +29,7 @@ final class DetailsViewModelImpl: DetailsViewModel, DetailsViewModelInput, Detai
   var imageUrl: Driver<URL?> = .empty()
   var stats: Driver<StatViewItem> = .empty()
   var speciesDescription: Driver<String> = .empty()
+  var types: Driver<[TypeResponse]> = .empty()
   
   private let bag = DisposeBag()
   
@@ -60,6 +62,17 @@ final class DetailsViewModelImpl: DetailsViewModel, DetailsViewModelInput, Detai
     .map { $0.defaultFlavorText() }
     .asDriver(onErrorJustReturn: "")
     
+    // MARK: - Types
     
+    types = infoResponseSuccess
+      .map { $0.types }
+      .flatMapLatest { types in
+        Observable.from(types).flatMap { type -> Observable<TypeResponse> in
+          guard let url = URL(string: type.url) else { return .empty() }
+          return api.request(.custom(url))
+        }
+      }
+      .map { [$0] }
+      .asDriver(onErrorDriveWith: .empty())
   }
 }

@@ -59,6 +59,12 @@ final class DetailsViewController: UIViewController {
     return view
   }()
   
+  private let typeViewBox: TypeViewBox = {
+    let view = TypeViewBox()
+    view.translatesAutoresizingMaskIntoConstraints = false
+    return view
+  }()
+  
   private lazy var contentStackView: UIStackView = {
     let stackView = UIStackView()
     stackView.axis = .vertical
@@ -67,6 +73,7 @@ final class DetailsViewController: UIViewController {
     
     stackView.addArrangedSubview(imageAndStatSection)
     stackView.addArrangedSubview(speciesDescView)
+    stackView.addArrangedSubview(typeViewBox)
     
     return stackView
   }()
@@ -132,6 +139,14 @@ final class DetailsViewController: UIViewController {
     viewModel.output.speciesDescription.drive(onNext: { [weak self] description in
       self?.speciesDescView.isHidden = description.isEmpty
       self?.speciesDescLabel.text = description
+    }).disposed(by: bag)
+    
+    viewModel.output.types.drive(onNext: { [weak self] types in
+      types.forEach { type in
+        let view = TypesView()
+        view.setTypes(item: type)
+        self?.typeViewBox.addTypeView(view)
+      }
     }).disposed(by: bag)
   }
 }
