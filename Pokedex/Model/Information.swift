@@ -7,6 +7,7 @@ struct InformationResponse: Decodable {
   let stats: [Stat]
   let species: RetrievableValue
   let types: [CharacterType]
+  let abilities: [Ability]
 }
 
 // MARK: Profile image
@@ -46,30 +47,10 @@ struct CharacterType: Decodable {
   }
 }
 
-// MARK: - Species response
 
-struct SpeciesResponse: Decodable {
-  let flavorTextEntries: [TextEntry]
-}
+// MARK: - Ability
 
-struct TextEntry: Decodable {
-  let flavorText: String
-  let language: RetrievableValue
-  let version: RetrievableValue
-}
-
-// MARK: - Type response
-
-struct TypeResponse: Decodable {
-  let damageRelations: DamageReduction
-  let name: String
-}
-
-struct DamageReduction: Decodable {
-  let doubleDamageFrom: [RetrievableValue]
-  let doubleDamageTo: [RetrievableValue]
-  let halfDamageFrom: [RetrievableValue]
-  let halfDamageTo: [RetrievableValue]
-  let noDamageFrom: [RetrievableValue]
-  let noDamageTo: [RetrievableValue]
+struct Ability: Decodable {
+  let ability: RetrievableValue
+  let isHidden: Bool
 }
