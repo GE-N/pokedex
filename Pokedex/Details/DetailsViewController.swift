@@ -59,8 +59,14 @@ final class DetailsViewController: UIViewController {
     return view
   }()
   
-  private let typeViewBox: TypeViewBox = {
+  private lazy var typeViewBox: TypeViewBox = {
     let view = TypeViewBox()
+    view.translatesAutoresizingMaskIntoConstraints = false
+    return view
+  }()
+  
+  private lazy var abilityViewBox: AbilityViewBox = {
+    let view = AbilityViewBox()
     view.translatesAutoresizingMaskIntoConstraints = false
     return view
   }()
@@ -74,6 +80,7 @@ final class DetailsViewController: UIViewController {
     stackView.addArrangedSubview(imageAndStatSection)
     stackView.addArrangedSubview(speciesDescView)
     stackView.addArrangedSubview(typeViewBox)
+    stackView.addArrangedSubview(abilityViewBox)
     
     return stackView
   }()
@@ -146,6 +153,14 @@ final class DetailsViewController: UIViewController {
         let view = TypesView()
         view.setTypes(item: type)
         self?.typeViewBox.addTypeView(view)
+      }
+    }).disposed(by: bag)
+    
+    viewModel.output.abilities.drive(onNext: { [weak self] ability in
+      ability.forEach { ability in
+        let view = AbilityView()
+        view.setAbility(ability)
+        self?.abilityViewBox.addAbility(view)
       }
     }).disposed(by: bag)
   }

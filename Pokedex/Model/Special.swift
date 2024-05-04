@@ -1,8 +1,8 @@
 struct SpeciesResponse: Decodable {
-  let flavorTextEntries: [TextEntry]
+  let flavorTextEntries: [SpeciesTextEntry]
 }
 
-struct TextEntry: Decodable {
+struct SpeciesTextEntry: Decodable {
   let flavorText: String
   let language: RetrievableValue
   let version: RetrievableValue

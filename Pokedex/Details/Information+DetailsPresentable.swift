@@ -65,5 +65,11 @@ extension TypeResponse: TypeViewPresentable {
   var noDamageTo: String? {
     return damageRelations.noDamageTo.map { $0.name }.joined(separator: ", ")
   }
-  
+}
+
+extension AbilityResponse: AbilityViewPresentable {
+  var details: String {
+    let defaultTextEntry = flavorTextEntries.filter { $0.language.name == "en" }.first?.flavorText ?? ""
+    return defaultTextEntry.replacingOccurrences(of: "\n", with: " ")
+  }
 }
