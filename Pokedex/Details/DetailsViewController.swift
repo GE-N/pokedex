@@ -75,7 +75,7 @@ final class DetailsViewController: UIViewController {
     let stackView = UIStackView()
     stackView.axis = .vertical
     stackView.translatesAutoresizingMaskIntoConstraints = false
-    stackView.spacing = 8
+    stackView.spacing = 16
     
     stackView.addArrangedSubview(imageAndStatSection)
     stackView.addArrangedSubview(speciesDescView)
@@ -99,6 +99,28 @@ final class DetailsViewController: UIViewController {
       contentStackView.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16),
     ])
     return scrollView
+  }()
+  
+  private lazy var loadingView: UIView = {
+    let stackView = UIStackView()
+    stackView.translatesAutoresizingMaskIntoConstraints = false
+    stackView.axis = .vertical
+    stackView.spacing = 8
+    stackView.widthAnchor.constraint(equalToConstant: 250).isActive = true
+    
+    let loadingIndicator = UIActivityIndicatorView()
+    loadingIndicator.style = .large
+    loadingIndicator.startAnimating()
+    
+    let label = UILabel()
+    label.translatesAutoresizingMaskIntoConstraints = false
+    label.textAlignment = .center
+    label.font = UIFont.systemFont(ofSize: 14)
+    label.text = "Getting Pokemon's information..."
+    
+    stackView.addArrangedSubview(loadingIndicator)
+    stackView.addArrangedSubview(label)
+    return stackView
   }()
   
   convenience init(viewModel: DetailsViewModel) {
@@ -125,7 +147,15 @@ final class DetailsViewController: UIViewController {
       contentScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
     ])
     
+    view.addSubview(loadingView)
+    NSLayoutConstraint.activate([
+      loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+      loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+    ])
+    
+    loadingView.isHidden = false
     speciesDescView.isHidden = true
+    contentScrollView.isHidden = true
   }
   
   func bindInput() {
@@ -163,5 +193,11 @@ final class DetailsViewController: UIViewController {
         self?.abilityViewBox.addAbility(view)
       }
     }).disposed(by: bag)
+    
+    viewModel.output.loadFinished.drive(onNext: { [weak self] _ in
+      self?.contentScrollView.isHidden = false
+      self?.loadingView.isHidden = true
+    })
+    .disposed(by: bag)
   }
 }

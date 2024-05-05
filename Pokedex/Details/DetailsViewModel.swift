@@ -13,6 +13,7 @@ protocol DetailsViewModelOutput {
   var speciesDescription: Driver<String> { get }
   var types: Driver<[TypeResponse]> { get }
   var abilities: Driver<[AbilityResponse]> { get }
+  var loadFinished: Driver<Void> { get }
 }
 
 protocol DetailsViewModel {
@@ -32,6 +33,7 @@ final class DetailsViewModelImpl: DetailsViewModel, DetailsViewModelInput, Detai
   var speciesDescription: Driver<String> = .empty()
   var types: Driver<[TypeResponse]> = .empty()
   var abilities: Driver<[AbilityResponse]> = .empty()
+  var loadFinished: Driver<Void> = .empty()
   
   private let bag = DisposeBag()
   
@@ -89,5 +91,17 @@ final class DetailsViewModelImpl: DetailsViewModel, DetailsViewModelInput, Detai
       }
       .map { [$0] }
       .asDriver(onErrorDriveWith: .empty())
+    
+    let allSections = Observable.combineLatest(
+      imageUrl.asObservable(),
+      stats.asObservable(),
+      speciesDescription.asObservable(),
+      types.asObservable(),
+      abilities.asObservable()
+    )
+    
+    loadFinished = allSections
+      .map { _ in () }
+      .asDriver(onErrorJustReturn: ())
   }
 }

@@ -10,6 +10,14 @@ class StatViewItem {
 }
 
 final class StatsView: UIView {
+  
+  private lazy var titleLabel: UILabel = {
+    let label = UILabel()
+    label.font = UIFont.systemFont(ofSize: 18.0, weight: .bold)
+    label.text = "Stats"
+    return label
+  }()
+  
   private lazy var hpLabel: UILabel = {
     let label = UILabel()
     return label
@@ -50,7 +58,7 @@ final class StatsView: UIView {
     stackView.translatesAutoresizingMaskIntoConstraints = false
     stackView.axis = .vertical
     stackView.distribution = .equalCentering
-    stackView.addArrangedSubview(topSpace)
+    stackView.addArrangedSubview(titleLabel)
     stackView.addArrangedSubview(hpLabel)
     stackView.addArrangedSubview(attackLabel)
     stackView.addArrangedSubview(defenseLabel)
@@ -59,8 +67,6 @@ final class StatsView: UIView {
     stackView.addArrangedSubview(speedLabel)
     stackView.addArrangedSubview(bottomSpace)
     
-    // Squeeze info on center.
-    topSpace.heightAnchor.constraint(equalTo: bottomSpace.heightAnchor).isActive = true
     return stackView
   }()
   
@@ -80,7 +86,7 @@ final class StatsView: UIView {
     
     addSubview(statStackView)
     NSLayoutConstraint.activate([
-      statStackView.topAnchor.constraint(equalTo: topAnchor),
+      statStackView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
       statStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
       statStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
       statStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8)
