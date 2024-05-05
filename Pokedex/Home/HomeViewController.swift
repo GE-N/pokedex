@@ -54,6 +54,12 @@ class HomeViewController: UIViewController {
     view.endEditing(true)
   }
   
+  private lazy var retryView: RetryView = {
+    let view = RetryView()
+    view.translatesAutoresizingMaskIntoConstraints = false
+    return view
+  }()
+  
   private let viewModel: HomeViewModel = HomeViewModelImpl()
   private let bag = DisposeBag()
   
@@ -85,12 +91,21 @@ class HomeViewController: UIViewController {
       collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
       collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
     ])
+    
+    view.addSubview(retryView)
+    NSLayoutConstraint.activate([
+      retryView.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
+      retryView.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor),
+    ])
+    
+    retryView.isHidden = true
   }
   
   private func bindInput() {
     rx.viewDidLoad.bind(to: viewModel.input.viewDidLoad).disposed(by: bag)
     (searchTextField.rx.text.orEmpty <-> viewModel.input.filterTyped).disposed(by: bag)
     collectionView.rx.itemSelected.bind(to: viewModel.input.itemSelected).disposed(by: bag)
+    retryView.retryButton.rx.tap.bind(to: viewModel.input.retryDidTap).disposed(by: bag)
   }
   
   private func bindOutput() {
@@ -117,6 +132,19 @@ class HomeViewController: UIViewController {
         let viewModel = DetailsViewModelImpl(pokemon: pokemon)
         let detailsView = DetailsViewController(viewModel: viewModel)
         self?.navigationController?.pushViewController(detailsView, animated: true)
+      })
+      .disposed(by: bag)
+    
+    viewModel.output.loadResult
+      .drive(onNext: { [weak self] result in
+        switch result {
+        case .success:
+          self?.collectionView.isHidden = false
+          self?.retryView.isHidden = true
+        case .failure:
+          self?.collectionView.isHidden = true
+          self?.retryView.isHidden = false
+        }
       })
       .disposed(by: bag)
   }

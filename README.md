@@ -16,7 +16,7 @@ App was written by UIKit Swift on Clean RxSwift MVVM architecture.
 
 [✓] Show a Pokemons index.
 [✓] Filterable by name or id.
-[] Retry if home screen load fail.
+[✓] Retry if home screen load fail.
 [✓] Show details of selected Pokemon.
 [✓] Reload if pokemon details load fail.
 
@@ -31,6 +31,8 @@ App was written by UIKit Swift on Clean RxSwift MVVM architecture.
 
 ### Limitation
 
+- Localization not apply.
+
 ##### Home screen
 
 - Not applied default image for non provided default sprite.
@@ -38,4 +40,5 @@ App was written by UIKit Swift on Clean RxSwift MVVM architecture.
 
 ##### Details screen
 
-- Not applied default image for non provided official artwork.
+- Not apply default image for non provided official artwork.
+- Not apply unknown stat if api response not provided.
