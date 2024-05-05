@@ -4,6 +4,7 @@ import RxCocoa
 
 protocol DetailsViewModelInput {
   var viewDidLoad: PublishRelay<Void> { get }
+  var retryDidTap: PublishRelay<Void> { get }
 }
 
 protocol DetailsViewModelOutput {
@@ -13,7 +14,8 @@ protocol DetailsViewModelOutput {
   var speciesDescription: Driver<String> { get }
   var types: Driver<[TypeResponse]> { get }
   var abilities: Driver<[AbilityResponse]> { get }
-  var loadFinished: Driver<Void> { get }
+  var loading: Driver<Void> { get }
+  var loadResult: Driver<Result<Void, Error>> { get }
 }
 
 protocol DetailsViewModel {
@@ -26,6 +28,7 @@ final class DetailsViewModelImpl: DetailsViewModel, DetailsViewModelInput, Detai
   var output: DetailsViewModelOutput { self }
   
   let viewDidLoad: PublishRelay<Void> = .init()
+  let retryDidTap: PublishRelay<Void> = .init()
   
   var name: String
   var imageUrl: Driver<URL?> = .empty()
@@ -33,7 +36,8 @@ final class DetailsViewModelImpl: DetailsViewModel, DetailsViewModelInput, Detai
   var speciesDescription: Driver<String> = .empty()
   var types: Driver<[TypeResponse]> = .empty()
   var abilities: Driver<[AbilityResponse]> = .empty()
-  var loadFinished: Driver<Void> = .empty()
+  var loading: Driver<Void> = .empty()
+  var loadResult: Driver<Result<Void, Error>> = .empty()
   
   private let bag = DisposeBag()
   
@@ -41,13 +45,16 @@ final class DetailsViewModelImpl: DetailsViewModel, DetailsViewModelInput, Detai
     let api = APIRequest()
     name = pokemon.name.capitalized
     
-    let infoResponse = viewDidLoad.flatMap { _ -> Observable<Event<InformationResponse>> in
-      guard let getInfoApi = pokemon.infoApi else { return .empty() }
-      return api.request(.custom(getInfoApi)).materialize()
-    }.share()
+    let loadingState = PublishRelay<Void>()
+    loading = loadingState.asDriver(onErrorDriveWith: .empty())
     
-    // TODO: handle error
-    infoResponse.errors().subscribe(onNext: { error in print(error)}).disposed(by: bag)
+    let infoResponse = Observable.merge(viewDidLoad.asObservable(), retryDidTap.asObservable())
+      .flatMap { _ -> Observable<Event<InformationResponse>> in
+        loadingState.accept(())
+        guard let getInfoApi = pokemon.infoApi else { return .empty() }
+        return api.request(.custom(getInfoApi)).materialize()
+      }
+      .share()
     
     let infoResponseSuccess = infoResponse.values().share()
     
@@ -99,9 +106,11 @@ final class DetailsViewModelImpl: DetailsViewModel, DetailsViewModelInput, Detai
       types.asObservable(),
       abilities.asObservable()
     )
+    let allSectionSuccess = allSections.map { _ -> Result<Void, Error> in Result.success(()) }
     
-    loadFinished = allSections
-      .map { _ in () }
-      .asDriver(onErrorJustReturn: ())
+    let infoResponseFail = infoResponse.errors().map { error -> Result<Void, Error> in Result.failure(error) }
+    
+    loadResult = Observable.merge(allSectionSuccess, infoResponseFail)
+      .asDriver(onErrorJustReturn: Result.failure("load details fail"))
   }
 }

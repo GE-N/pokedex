@@ -123,6 +123,12 @@ final class DetailsViewController: UIViewController {
     return stackView
   }()
   
+  private lazy var retryView: RetryView = {
+    let retryView = RetryView()
+    retryView.translatesAutoresizingMaskIntoConstraints = false
+    return retryView
+  }()
+  
   convenience init(viewModel: DetailsViewModel) {
     self.init(nibName: nil, bundle: nil)
     self.viewModel = viewModel
@@ -153,6 +159,12 @@ final class DetailsViewController: UIViewController {
       loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
     ])
     
+    view.addSubview(retryView)
+    NSLayoutConstraint.activate([
+      retryView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+      retryView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+    ])
+    
     loadingView.isHidden = false
     speciesDescView.isHidden = true
     contentScrollView.isHidden = true
@@ -160,6 +172,7 @@ final class DetailsViewController: UIViewController {
   
   func bindInput() {
     rx.viewDidLoad.bind(to: viewModel.input.viewDidLoad).disposed(by: bag)
+    retryView.retryButton.rx.tap.bind(to: viewModel.input.retryDidTap).disposed(by: bag)
   }
   
   func bindOutput() {
@@ -194,9 +207,23 @@ final class DetailsViewController: UIViewController {
       }
     }).disposed(by: bag)
     
-    viewModel.output.loadFinished.drive(onNext: { [weak self] _ in
-      self?.contentScrollView.isHidden = false
+    viewModel.output.loading.drive(onNext: { [weak self] _ in
+      self?.loadingView.isHidden = false
+      self?.contentScrollView.isHidden = true
+      self?.retryView.isHidden = true
+    })
+    .disposed(by: bag)
+    
+    viewModel.output.loadResult.drive(onNext: { [weak self] result in
       self?.loadingView.isHidden = true
+      switch result {
+      case .success:
+        self?.contentScrollView.isHidden = false
+        self?.retryView.isHidden = true
+      case .failure:
+        self?.contentScrollView.isHidden = true
+        self?.retryView.isHidden = false
+      }
     })
     .disposed(by: bag)
   }
