@@ -60,11 +60,11 @@ final class DetailsViewModelImpl: DetailsViewModel, DetailsViewModelInput, Detai
     
     imageUrl = infoResponseSuccess
       .map { $0.officialArtworkUrl() }
-      .asDriver(onErrorDriveWith: .empty())
+      .asDriver(onErrorJustReturn: nil)
     
     stats = infoResponseSuccess
       .map { $0.pokemonStats() }
-      .asDriver(onErrorDriveWith: .empty())
+      .asDriver(onErrorJustReturn: StatViewItem())
     
     speciesDescription = infoResponseSuccess.flatMap { info -> Observable<SpeciesResponse> in
       guard let speciesInfo = URL(string: info.species.url) else { return .empty() }
@@ -84,7 +84,7 @@ final class DetailsViewModelImpl: DetailsViewModel, DetailsViewModelInput, Detai
         }
       }
       .map { [$0] }
-      .asDriver(onErrorDriveWith: .empty())
+      .asDriver(onErrorJustReturn: [])
     
     // MARK: - Abilities
     
@@ -97,7 +97,7 @@ final class DetailsViewModelImpl: DetailsViewModel, DetailsViewModelInput, Detai
         }
       }
       .map { [$0] }
-      .asDriver(onErrorDriveWith: .empty())
+      .asDriver(onErrorJustReturn: [])
     
     let allSections = Observable.combineLatest(
       imageUrl.asObservable(),

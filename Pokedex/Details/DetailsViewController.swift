@@ -167,6 +167,8 @@ final class DetailsViewController: UIViewController {
     
     loadingView.isHidden = false
     speciesDescView.isHidden = true
+    typeViewBox.isHidden = true
+    abilityViewBox.isHidden = true
     contentScrollView.isHidden = true
   }
   
@@ -193,6 +195,7 @@ final class DetailsViewController: UIViewController {
     
     viewModel.output.types.drive(onNext: { [weak self] types in
       types.forEach { type in
+        self?.typeViewBox.isHidden = false
         let view = TypesView()
         view.setTypes(item: type)
         self?.typeViewBox.addTypeView(view)
@@ -201,6 +204,7 @@ final class DetailsViewController: UIViewController {
     
     viewModel.output.abilities.drive(onNext: { [weak self] ability in
       ability.forEach { ability in
+        self?.abilityViewBox.isHidden = false
         let view = AbilityView()
         view.setAbility(ability)
         self?.abilityViewBox.addAbility(view)
