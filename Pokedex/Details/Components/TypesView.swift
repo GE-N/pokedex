@@ -17,7 +17,7 @@ final class TypeViewBox: UIView {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.text = "Types and corelation"
-    label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+    label.font = style.titleFont
     return label
   }()
   
@@ -25,7 +25,7 @@ final class TypeViewBox: UIView {
     let stackView = UIStackView()
     stackView.translatesAutoresizingMaskIntoConstraints = false
     stackView.axis = .vertical
-    stackView.spacing = 24
+    stackView.spacing = style.padding * 3
     return stackView
   }()
   
@@ -41,19 +41,19 @@ final class TypeViewBox: UIView {
   
   private func commonInit() {
     backgroundColor = style.lightGrayColor
-    layer.cornerRadius = 8
+    layer.cornerRadius = style.cornerRadius
     addSubview(titleLabel)
     NSLayoutConstraint.activate([
-      titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-      titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
-      titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+      titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: style.padding * 2),
+      titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: style.padding),
+      titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -style.padding),
     ])
     addSubview(typeStackView)
     NSLayoutConstraint.activate([
-      typeStackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
-      typeStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
-      typeStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
-      typeStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+      typeStackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: style.padding),
+      typeStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: style.padding),
+      typeStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -style.padding * 2),
+      typeStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -style.padding),
     ])
   }
   
@@ -63,11 +63,13 @@ final class TypeViewBox: UIView {
 }
 
 final class TypesView: UIView {
+  let style = Style()
+  
   private lazy var typeLabel: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.numberOfLines = 0
-    label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+    label.font = style.mainTextFont
     return label
   }()
   
@@ -75,7 +77,7 @@ final class TypesView: UIView {
     let label = UILabel()
     label.numberOfLines = 0
     label.isHidden = true
-    label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+    label.font = style.subTextFont
     return label
   }()
   
@@ -83,7 +85,7 @@ final class TypesView: UIView {
     let label = UILabel()
     label.numberOfLines = 0
     label.isHidden = true
-    label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+    label.font = style.subTextFont
     return label
   }()
   
@@ -91,7 +93,7 @@ final class TypesView: UIView {
     let label = UILabel()
     label.numberOfLines = 0
     label.isHidden = true
-    label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+    label.font = style.subTextFont
     return label
   }()
   
@@ -99,7 +101,7 @@ final class TypesView: UIView {
     let label = UILabel()
     label.numberOfLines = 0
     label.isHidden = true
-    label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+    label.font = style.subTextFont
     return label
   }()
   
@@ -107,7 +109,7 @@ final class TypesView: UIView {
     let label = UILabel()
     label.numberOfLines = 0
     label.isHidden = true
-    label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+    label.font = style.subTextFont
     return label
   }()
   
@@ -115,14 +117,14 @@ final class TypesView: UIView {
     let label = UILabel()
     label.numberOfLines = 0
     label.isHidden = true
-    label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+    label.font = style.subTextFont
     return label
   }()
   
   private lazy var strengthWeakStackView: UIStackView = {
     let stackView = UIStackView()
     stackView.axis = .vertical
-    stackView.spacing = 8
+    stackView.spacing = style.padding
     stackView.addArrangedSubview(doubleDamageToLabel)
     stackView.addArrangedSubview(halfDamageFromLabel)
     stackView.addArrangedSubview(noDamageFromLabel)
@@ -140,7 +142,7 @@ final class TypesView: UIView {
     
     let stackView = UIStackView()
     stackView.axis = .horizontal
-    stackView.spacing = 16
+    stackView.spacing = style.padding * 2
     stackView.translatesAutoresizingMaskIntoConstraints = false
     stackView.addArrangedSubview(typeLabel)
     stackView.addArrangedSubview(separator)
@@ -162,14 +164,14 @@ final class TypesView: UIView {
   
   private func commonInit() {
     backgroundColor = Style().lightGrayColor
-    layer.cornerRadius = 8
+    layer.cornerRadius = style.cornerRadius
     
     addSubview(contentStackView)
     NSLayoutConstraint.activate([
       contentStackView.topAnchor.constraint(equalTo: topAnchor),
-      contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+      contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: style.padding),
       contentStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
-      contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8)
+      contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -style.padding)
     ])
   }
   

@@ -10,10 +10,11 @@ class StatViewItem {
 }
 
 final class StatsView: UIView {
+  private let style = Style()
   
   private lazy var titleLabel: UILabel = {
     let label = UILabel()
-    label.font = UIFont.systemFont(ofSize: 18.0, weight: .bold)
+    label.font = style.mainTextFont
     label.text = "Stats"
     return label
   }()
@@ -82,14 +83,14 @@ final class StatsView: UIView {
   
   private func commonInit() {
     backgroundColor = Style().lightGrayColor
-    layer.cornerRadius = 8
+    layer.cornerRadius = style.cornerRadius
     
     addSubview(statStackView)
     NSLayoutConstraint.activate([
-      statStackView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-      statStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+      statStackView.topAnchor.constraint(equalTo: topAnchor, constant: style.padding),
+      statStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: style.padding),
       statStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
-      statStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8)
+      statStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -style.padding)
     ])
   }
   

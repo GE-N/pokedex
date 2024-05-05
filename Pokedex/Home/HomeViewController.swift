@@ -4,6 +4,7 @@ import RxCocoa
 
 class HomeViewController: UIViewController {
   private var contentWidth: CGFloat?
+  private let style = Style()
   
   private lazy var searchTextField: UITextField = {
     let textField = UITextField()
@@ -38,7 +39,7 @@ class HomeViewController: UIViewController {
     let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
     collectionView.translatesAutoresizingMaskIntoConstraints = false
     collectionView.register(HomeItemCell.self, forCellWithReuseIdentifier: HomeItemCell.cellIdentifier)
-    collectionView.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 16, right: 16)
+    collectionView.contentInset = style.homeCollectionViewContentInset
     collectionView.delegate = self
     return collectionView
   }()
@@ -153,13 +154,13 @@ class HomeViewController: UIViewController {
 extension HomeViewController: UICollectionViewDelegateFlowLayout {
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
     if contentWidth == nil {
-      let columnsPerRow = 3
-      let spacing = CGFloat(columnsPerRow + 1) * 8.0
+      let columnsPerRow = style.homeColumnPerRow
+      let spacing = CGFloat(columnsPerRow + 1) * style.padding
       let horizontalInset = collectionView.contentInset.left + collectionView.contentInset.right
       let contextWidth = collectionView.bounds.size.width - horizontalInset - spacing
       self.contentWidth = CGFloat(contextWidth) / CGFloat(columnsPerRow)
     }
     
-    return CGSize(width: contentWidth!, height: 150)
+    return CGSize(width: contentWidth!, height: style.homeCellHeight)
   }
 }

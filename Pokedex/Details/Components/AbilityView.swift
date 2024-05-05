@@ -12,7 +12,7 @@ final class AbilityViewBox: UIView {
     let stackView = UIStackView()
     stackView.translatesAutoresizingMaskIntoConstraints = false
     stackView.axis = .vertical
-    stackView.spacing = 24
+    stackView.spacing = style.padding * 3
     return stackView
   }()
   
@@ -28,14 +28,14 @@ final class AbilityViewBox: UIView {
   
   private func commonInit() {
     backgroundColor = style.lightGrayColor
-    layer.cornerRadius = 8
+    layer.cornerRadius = style.cornerRadius
     
     addSubview(contentStackView)
     NSLayoutConstraint.activate([
-      contentStackView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-      contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
-      contentStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
-      contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+      contentStackView.topAnchor.constraint(equalTo: topAnchor, constant: style.padding),
+      contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: style.padding),
+      contentStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -style.padding),
+      contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -style.padding),
     ])
   }
   
@@ -49,13 +49,13 @@ final class AbilityView: UIView {
   
   private lazy var titleLabel: UILabel = {
     let label = UILabel()
-    label.font = UIFont.systemFont(ofSize: 18.0, weight: .bold)
+    label.font = style.titleFont
     return label
   }()
   
   private lazy var detailsLabel: UILabel = {
     let label = UILabel()
-    label.font = UIFont.systemFont(ofSize: 16.0, weight: .regular)
+    label.font = style.detailsFont
     label.numberOfLines = 0
     return label
   }()
@@ -69,7 +69,7 @@ final class AbilityView: UIView {
     let stackView = UIStackView()
     stackView.translatesAutoresizingMaskIntoConstraints = false
     stackView.axis = .vertical
-    stackView.spacing = 16
+    stackView.spacing = style.padding * 2
     stackView.addArrangedSubview(titleLabel)
     stackView.addArrangedSubview(separator)
     stackView.addArrangedSubview(detailsLabel)
@@ -89,10 +89,10 @@ final class AbilityView: UIView {
   private func commonInit() {
     addSubview(contentStackView)
     NSLayoutConstraint.activate([
-      contentStackView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-      contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
-      contentStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
-      contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+      contentStackView.topAnchor.constraint(equalTo: topAnchor, constant: style.padding),
+      contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: style.padding),
+      contentStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -style.padding),
+      contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -style.padding),
     ])
   }
   

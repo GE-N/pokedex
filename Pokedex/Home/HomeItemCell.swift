@@ -32,7 +32,7 @@ final class HomeItemCell: UICollectionViewCell {
   private lazy var idLabel: UILabel = {
     let label = UILabel()
     label.textColor = style.subTextColor
-    label.font = UIFont.systemFont(ofSize: 12, weight: .bold)
+    label.font = style.subTextFont2
     return label
   }()
   
@@ -40,7 +40,7 @@ final class HomeItemCell: UICollectionViewCell {
     let label = UILabel()
     label.textColor = style.mainTextColor
     label.textAlignment = .center
-    label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+    label.font = style.subTextFont
     return label
   }()
   
@@ -48,7 +48,7 @@ final class HomeItemCell: UICollectionViewCell {
     let stackView = UIStackView()
     stackView.translatesAutoresizingMaskIntoConstraints = false
     stackView.axis = .vertical
-    stackView.spacing = 4
+    stackView.spacing = style.padding/2
     stackView.addArrangedSubview(idLabel)
     stackView.addArrangedSubview(spriteView)
     stackView.addArrangedSubview(nameLabel)
@@ -66,15 +66,15 @@ final class HomeItemCell: UICollectionViewCell {
   }
   
   private func commonInit() {
-    contentView.layer.cornerRadius = 8
+    contentView.layer.cornerRadius = style.cornerRadius
     contentView.layer.borderColor = style.lightGrayColor.cgColor
     contentView.layer.borderWidth = 1
     contentView.addSubview(contentStackView)
     NSLayoutConstraint.activate([
-      contentStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-      contentStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 4),
-      contentStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
-      contentStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
+      contentStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: style.padding),
+      contentStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: style.padding/2),
+      contentStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -style.padding),
+      contentStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -style.padding/2),
     ])
   }
   

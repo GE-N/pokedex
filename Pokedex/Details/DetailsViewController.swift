@@ -30,7 +30,7 @@ final class DetailsViewController: UIViewController {
   private lazy var imageAndStatSection: UIStackView = {
     let stackView = UIStackView()
     stackView.axis = .horizontal
-    stackView.spacing = 8
+    stackView.spacing = style.padding
     stackView.distribution = .fillEqually
     stackView.addArrangedSubview(pokemonImageView)
     stackView.addArrangedSubview(statsView)
@@ -49,13 +49,13 @@ final class DetailsViewController: UIViewController {
     view.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(speciesDescLabel)
     NSLayoutConstraint.activate([
-      speciesDescLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 8),
-      speciesDescLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
-      speciesDescLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -8),
-      speciesDescLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
+      speciesDescLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: style.padding),
+      speciesDescLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: style.padding),
+      speciesDescLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -style.padding),
+      speciesDescLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -style.padding),
     ])
     view.backgroundColor = style.lightGrayColor
-    view.layer.cornerRadius = 8
+    view.layer.cornerRadius = style.cornerRadius
     return view
   }()
   
@@ -75,7 +75,7 @@ final class DetailsViewController: UIViewController {
     let stackView = UIStackView()
     stackView.axis = .vertical
     stackView.translatesAutoresizingMaskIntoConstraints = false
-    stackView.spacing = 16
+    stackView.spacing = style.padding * 2
     
     stackView.addArrangedSubview(imageAndStatSection)
     stackView.addArrangedSubview(speciesDescView)
@@ -90,13 +90,13 @@ final class DetailsViewController: UIViewController {
     scrollView.translatesAutoresizingMaskIntoConstraints = false
     scrollView.addSubview(contentStackView)
     NSLayoutConstraint.activate([
-      contentStackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 16),
-      contentStackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 16),
+      contentStackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: style.padding * 2),
+      contentStackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: style.padding * 2),
       contentStackView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
       contentStackView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
       
-      contentStackView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
-      contentStackView.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16),
+      contentStackView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: style.padding * 2),
+      contentStackView.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -style.padding * 2),
     ])
     return scrollView
   }()
@@ -105,8 +105,8 @@ final class DetailsViewController: UIViewController {
     let stackView = UIStackView()
     stackView.translatesAutoresizingMaskIntoConstraints = false
     stackView.axis = .vertical
-    stackView.spacing = 8
-    stackView.widthAnchor.constraint(equalToConstant: 250).isActive = true
+    stackView.spacing = style.padding
+    stackView.widthAnchor.constraint(equalToConstant: style.loadingViewWidth).isActive = true
     
     let loadingIndicator = UIActivityIndicatorView()
     loadingIndicator.style = .large
@@ -115,7 +115,7 @@ final class DetailsViewController: UIViewController {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.textAlignment = .center
-    label.font = UIFont.systemFont(ofSize: 14)
+    label.font = style.subTextFont
     label.text = "Getting Pokemon's information..."
     
     stackView.addArrangedSubview(loadingIndicator)
